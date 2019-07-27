@@ -4,17 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rappitest.BuildConfig
 import com.example.rappitest.models.MoviePageResponse
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.*
 
 @Singleton
 class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
@@ -26,9 +24,8 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
 
     init {
         val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-            ).build()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
 
         tmdbService = Retrofit.Builder()
             .client(okHttpClient)
@@ -48,7 +45,8 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
     }
 
     override fun getPopularMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit) {
-        val callback = TmdbCallback<MoviePageResponse>(isLoading, requestErrorAction, RequestAction.GET_MOST_POPULAR, onSuccessFun)
+        val callback =
+            TmdbCallback<MoviePageResponse>(isLoading, requestErrorAction, RequestAction.GET_MOST_POPULAR, onSuccessFun)
         val popularMoviesCall = tmdbService.getPopularMovies(BuildConfig.TmdbApiKey, lang, page)
         popularMoviesCall.enqueue(callback)
     }

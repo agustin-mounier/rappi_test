@@ -1,7 +1,10 @@
 package com.example.rappitest.repository.local
 
-import io.realm.Realm
+import com.example.rappitest.models.Movie
 
-class TmdbDao(realm: Realm) {
+interface TmdbDao {
 
+    fun closeRealm()
+
+    fun persistMovies(movies: List<Movie>?)
 }

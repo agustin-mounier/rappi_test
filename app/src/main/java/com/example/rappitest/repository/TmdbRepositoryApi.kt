@@ -10,5 +10,5 @@ interface TmdbRepositoryApi {
 
     fun getRequestErrorAction(): LiveData<RequestAction>
 
-    fun getPopualarMovies(page: Int): LiveData<List<Movie>>
+    fun getPopularMovies(page: Int): LiveData<List<Movie>>
 }

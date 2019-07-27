@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface TmdbService {
 
     companion object {
-        const val BaseUrl = "https://api.themoviedb.org/4"
+        const val BaseUrl = "https://api.themoviedb.org/3/"
     }
 
     object Paths {

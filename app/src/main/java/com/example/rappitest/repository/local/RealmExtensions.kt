@@ -6,5 +6,4 @@ import io.realm.RealmResults
 
 class RealmExtensions {
     fun <T: RealmModel> RealmResults<T>.asLiveData() = RealmLiveData<T>(this)
-    fun Realm.tmdbDao() : TmdbDao = TmdbDao(this)
 }
