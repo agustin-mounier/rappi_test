@@ -1,6 +1,7 @@
 package com.example.rappitest.repository.remote
 
 import androidx.lifecycle.LiveData
+import com.example.rappitest.models.GenresResponse
 import com.example.rappitest.models.MoviePageResponse
 
 interface TmdbServiceApi {
@@ -10,4 +11,10 @@ interface TmdbServiceApi {
     fun getRequestErrorAction(): LiveData<RequestAction>
 
     fun getPopularMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit)
+
+    fun getTopRatedMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit)
+
+    fun getUpcomingMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit)
+
+    fun getMovieGenres(onSuccessFun: (GenresResponse?) -> Unit)
 }

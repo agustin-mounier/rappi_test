@@ -8,6 +8,9 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import io.realm.Realm
 import javax.inject.Inject
+import io.realm.RealmConfiguration
+
+
 
 class RappiTestApplication : Application(), HasActivityInjector {
 
@@ -22,7 +25,12 @@ class RappiTestApplication : Application(), HasActivityInjector {
             .build()
             .inject(this)
 
+
         Realm.init(this)
+        val config = RealmConfiguration.Builder()
+            .deleteRealmIfMigrationNeeded()
+            .build()
+        Realm.setDefaultConfiguration(config)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector

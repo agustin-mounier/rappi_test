@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">RappiTest</string>
+
+    <!-- Error messages -->
+    <string name="retry">Retry</string>
+    <string name="popular_error">An error occurred while loading most popular movies</string>
+    <string name="loading_movies">Loading Movies</string>
+    <string name="popular">Popular</string>
+    <string name="title_activity_tmdb_feed2">TmdbFeedActivity2</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="upcoming">Upcoming</string>
 </resources>

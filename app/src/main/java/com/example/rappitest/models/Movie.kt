@@ -20,4 +20,12 @@ open class Movie (
     var vote_count: Float = 0.0f,
     var video: Boolean = false,
     var vote_average: Float = 0.0f
-) : RealmObject()
+) : RealmObject() {
+    //TODO: meter distintas resoluciones
+    companion object {
+        const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500"
+    }
+    fun getPosterUrl(): String {
+        return BASE_IMAGE_URL + poster_path
+    }
+}

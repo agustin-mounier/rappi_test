@@ -1,6 +1,6 @@
-package com.example.rappitest.repository.local
+package com.example.rappitest.utils
 
-import io.realm.Realm
+import com.example.rappitest.repository.local.RealmLiveData
 import io.realm.RealmModel
 import io.realm.RealmResults
 

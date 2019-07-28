@@ -12,7 +12,7 @@ class TmdbDaoImpl @Inject constructor(private val realm: Realm) : TmdbDao {
 
     override fun persistMovies(movies: List<Movie>?) {
         realm.executeTransactionAsync { realm ->
-            movies?.forEach { realm.insert(it) }
+            movies?.forEach { realm.insertOrUpdate(it) }
         }
     }
 
