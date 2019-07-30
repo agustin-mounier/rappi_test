@@ -17,7 +17,7 @@ abstract class AppModule {
 
     @Binds
     @Singleton
-    abstract fun bindApplication(application : RappiTestApplication) : Application
+    abstract fun bindApplication(application: RappiTestApplication): Application
 
     @Binds
     abstract fun bindRepository(repository: TmdbRepositoryImpl): TmdbRepositoryApi

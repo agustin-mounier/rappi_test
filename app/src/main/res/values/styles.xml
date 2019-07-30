@@ -22,4 +22,20 @@
         <item name="android:textColor">@color/ice_blue</item>
         <item name="android:background">@drawable/tmdb_radio_button_background</item>
     </style>
+    <style name="Tmdb.Detail">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+    <style name="Tmdb.Detail.Title">
+        <item name="android:textSize">24sp</item>
+    </style>
+    <style name="Tmdb.Detail.Year">
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="Tmdb.Detail.Overview">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="Tmdb.Detail.OverviewText">
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

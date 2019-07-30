@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/movie_detail_toolbar"
+            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@+id/movie_detail_backdrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageView
+            android:id="@+id/movie_detail_backdrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/movie_detail_toolbar" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/movie_detail_backdrop">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+            <ImageView
+                    android:id="@+id/movie_detail_poster"
+                    android:layout_width="182dp"
+                    android:layout_height="273dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                    android:id="@+id/movie_detail_title"
+                    android:layout_width="0dp"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    style="@style/Tmdb.Detail.Title"
+                    tools:text="Breaking Bad" app:layout_constraintTop_toBottomOf="@+id/movie_detail_poster"
+                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="24dp" android:layout_marginEnd="16dp" android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp" android:layout_marginStart="16dp"/>
+
+            <TextView
+                    android:id="@+id/movie_detail_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Tmdb.Detail.Year"
+                    tools:text="2011" app:layout_constraintTop_toBottomOf="@+id/movie_detail_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="2dp"/>
+
+            <TextView
+                    android:id="@+id/movie_overview_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Tmdb.Detail.Overview"
+                    android:text="@string/overview"
+                    android:layout_marginTop="42dp"
+                    app:layout_constraintTop_toBottomOf="@+id/movie_detail_year"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"/>
+
+            <TextView
+                    android:id="@+id/movie_overview"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    style="@style/Tmdb.Detail.OverviewText"
+                    app:layout_constraintTop_toBottomOf="@+id/movie_overview_text"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginLeft="32dp" android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginRight="32dp" android:layout_marginTop="32dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

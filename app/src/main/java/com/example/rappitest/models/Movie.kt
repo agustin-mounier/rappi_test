@@ -21,11 +21,20 @@ open class Movie (
     var video: Boolean = false,
     var vote_average: Float = 0.0f
 ) : RealmObject() {
-    //TODO: meter distintas resoluciones
+
+    enum class Category {
+        Popular, TopRated, Upcoming
+    }
+
+    //TODO: meter distintas resoluciones y sacar de aca.
     companion object {
         const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500"
     }
     fun getPosterUrl(): String {
         return BASE_IMAGE_URL + poster_path
+    }
+
+    fun getBackDropPath(): String {
+        return BASE_IMAGE_URL + backdrop_path
     }
 }

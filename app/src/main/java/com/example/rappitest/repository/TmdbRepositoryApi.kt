@@ -8,7 +8,11 @@ interface TmdbRepositoryApi {
 
     fun isLoading(): LiveData<Boolean>
 
+    fun isLoadingPage(): LiveData<Boolean>
+
     fun getRequestErrorAction(): LiveData<RequestAction>
+
+    fun getMovie(movieId: Int): Movie?
 
     fun getMovies(): LiveData<List<Movie>>
 

@@ -2,6 +2,7 @@ package com.example.rappitest.dagger
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.rappitest.viewmodels.TmdbDetailViewModel
 import com.example.rappitest.viewmodels.TmdbFeedViewModel
 import com.example.rappitest.viewmodels.ViewModelFactory
 import dagger.Binds
@@ -26,6 +27,9 @@ abstract class ViewModelsModule {
     @ViewModelKey(TmdbFeedViewModel::class)
     internal abstract fun tmdbFeedViewModel(viewModel: TmdbFeedViewModel): ViewModel
 
-    //Add more ViewModels here
+    @Binds
+    @IntoMap
+    @ViewModelKey(TmdbDetailViewModel::class)
+    internal abstract fun tmdbDetailViewModel(viewModel: TmdbDetailViewModel): ViewModel
 }
 

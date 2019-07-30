@@ -58,14 +58,17 @@ class TmdbFeedActivity : AppCompatActivity() {
 
     fun fetchMostPopular(view: View) {
         viewModel.fetchMostPopular()
+        scrollListener.resetState()
     }
 
     fun fetchTopRated(view: View) {
         viewModel.fetchTopRated()
+        scrollListener.resetState()
     }
 
     fun fetchUpcoming(view: View) {
         viewModel.fetchUpcoming()
+        scrollListener.resetState()
     }
 
     private fun initFeed() {
@@ -74,7 +77,7 @@ class TmdbFeedActivity : AppCompatActivity() {
 
         movie_feed.layoutManager = layoutManager
         movie_feed.addOnScrollListener(scrollListener)
-        movie_feed.adapter = MovieFeedAdapter(viewModel.getMovies(), viewModel.getMovieGenres())
+        movie_feed.adapter = MovieFeedAdapter(viewModel.getMovies(), viewModel.getMovieGenres(), viewModel.isLoadingPage())
     }
 
     private fun initObservers() {
@@ -82,10 +85,12 @@ class TmdbFeedActivity : AppCompatActivity() {
             if (it) showLoading() else hideLoading()
         })
 
+        // TODO: ver que onda
         viewModel.getMovies().observe(this, Observer {
-            val positionStart = it.size - TmdbService.PageSize
-            movie_feed.adapter?.notifyItemRangeInserted(positionStart, it.size)
-            if (positionStart == 0) movie_feed.scheduleLayoutAnimation() // TODO: ver que onda
+            val positionStart = if (it.size < 20) 0 else it.size - TmdbService.PageSize
+            //movie_feed.adapter?.notifyItemRangeInserted(positionStart, it.size)
+            movie_feed.adapter?.notifyDataSetChanged()
+            if (positionStart == 0) movie_feed.scheduleLayoutAnimation()
         })
     }
 

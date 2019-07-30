@@ -1,24 +1,31 @@
 package com.example.rappitest.views
 
+import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.rappitest.models.Movie
 import com.example.rappitest.utils.PalleteRequestListener
+import com.example.rappitest.views.TmdbDetailActivity.Companion.MOVIE_EXTRA
 import kotlinx.android.synthetic.main.movie_item_view.view.*
 
 
-class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class MovieViewHolder(itemView: View, private val genresMap: Map<Int, String>) : BaseViewHolder(itemView) {
 
     private lateinit var movie: Movie
 
     init {
         itemView.setOnClickListener {
+            val detailIntent = Intent(it.context, TmdbDetailActivity::class.java)
+            detailIntent.putExtra(MOVIE_EXTRA, movie.id)
+            it.context.startActivity(detailIntent)
         }
     }
 
-    fun bind(movie: Movie, genresMap: Map<Int, String>) {
+    override fun bind(movie: Movie) {
         this.movie = movie
         itemView.movie_title.text = movie.title
 
@@ -28,8 +35,8 @@ class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val uri = Uri.parse(movie.getPosterUrl())
         Glide.with(itemView)
             .load(uri)
-            .centerCrop()
-            .listener(PalleteRequestListener(itemView.movie_image))
+            .transform(CenterCrop(), RoundedCorners(20))
+            .listener(PalleteRequestListener(itemView.movie_image, PorterDuff.Mode.OVERLAY))
             .into(itemView.movie_image)
     }
 }

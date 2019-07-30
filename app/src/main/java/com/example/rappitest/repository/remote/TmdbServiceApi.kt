@@ -8,6 +8,8 @@ interface TmdbServiceApi {
 
     fun isLoading(): LiveData<Boolean>
 
+    fun isLoadingPage(): LiveData<Boolean>
+
     fun getRequestErrorAction(): LiveData<RequestAction>
 
     fun getPopularMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit)
@@ -16,5 +18,5 @@ interface TmdbServiceApi {
 
     fun getUpcomingMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit)
 
-    fun getMovieGenres(onSuccessFun: (GenresResponse?) -> Unit)
+    fun getMovieGenres(): GenresResponse?
 }

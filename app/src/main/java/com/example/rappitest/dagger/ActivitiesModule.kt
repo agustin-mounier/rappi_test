@@ -1,5 +1,6 @@
 package com.example.rappitest.dagger
 
+import com.example.rappitest.views.TmdbDetailActivity
 import com.example.rappitest.views.TmdbFeedActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -9,4 +10,8 @@ abstract class ActivitiesModule {
 
     @ContributesAndroidInjector
     internal abstract fun contributesTmdbFeedActivity(): TmdbFeedActivity
+
+
+    @ContributesAndroidInjector
+    internal abstract fun contributesTmdbDetailActivity(): TmdbDetailActivity
 }

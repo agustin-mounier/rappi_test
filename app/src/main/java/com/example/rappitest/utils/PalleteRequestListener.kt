@@ -11,7 +11,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
-class PalleteRequestListener(private val view: ImageView) : RequestListener<Drawable> {
+class PalleteRequestListener(private val view: ImageView, private val mode: PorterDuff.Mode) : RequestListener<Drawable> {
     override fun onLoadFailed(
         e: GlideException?,
         model: Any?,
@@ -31,7 +31,7 @@ class PalleteRequestListener(private val view: ImageView) : RequestListener<Draw
         if (resource != null) {
             val palette = Palette.from(resource.toBitmap()).generate()
             val color = palette.getDarkMutedColor(Color.TRANSPARENT)
-            view.setColorFilter(color, PorterDuff.Mode.OVERLAY)
+            view.setColorFilter(color, mode)
         }
         return false
     }

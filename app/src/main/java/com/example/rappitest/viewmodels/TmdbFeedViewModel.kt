@@ -48,4 +48,8 @@ class TmdbFeedViewModel @Inject constructor(private val repository: TmdbReposito
     fun isLoading(): LiveData<Boolean> {
         return repository.isLoading()
     }
+
+    fun isLoadingPage(): LiveData<Boolean> {
+        return repository.isLoadingPage()
+    }
 }

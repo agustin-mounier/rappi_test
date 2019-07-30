@@ -9,17 +9,33 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.rappitest.R
 import com.example.rappitest.models.Movie
 
+
 class MovieFeedAdapter(
     private val movies: LiveData<List<Movie>>,
-    private val genresMap: Map<Int, String>
-) : RecyclerView.Adapter<MovieViewHolder>(), Filterable {
+    private val genresMap: Map<Int, String>,
+    private val isLoadingPage: LiveData<Boolean>
+) : RecyclerView.Adapter<BaseViewHolder>(), Filterable {
+
+    companion object {
+        const val MOVIE_TYPE = 0
+        const val LOADING_TYPE = 1
+    }
 
     private var filteredMovies: List<Movie>? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.movie_item_view, parent, false)
-        return MovieViewHolder(view)
+        return when (viewType) {
+            MOVIE_TYPE -> {
+                val view = layoutInflater.inflate(R.layout.movie_item_view, parent, false)
+                MovieViewHolder(view, genresMap)
+            }
+            LOADING_TYPE -> {
+                val view = layoutInflater.inflate(R.layout.loading_item_view, parent, false)
+                LoadingViewHolder(view)
+            }
+            else -> null as BaseViewHolder
+        }
     }
 
     override fun getItemCount(): Int {
@@ -29,11 +45,22 @@ class MovieFeedAdapter(
         return movies.value?.size ?: 0
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         if (filteredMovies == null) {
-            holder.bind(movies.value!![position], genresMap)
+            holder.bind(movies.value!![position])
         } else {
-            holder.bind(filteredMovies!![position], genresMap)
+            holder.bind(filteredMovies!![position])
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (isLoadingPage.value == true) {
+            if (position == movies.value!!.size - 1)
+                return LOADING_TYPE
+            else
+                return MOVIE_TYPE
+        } else {
+            return MOVIE_TYPE
         }
     }
 
