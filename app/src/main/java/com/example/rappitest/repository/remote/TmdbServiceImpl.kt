@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.rappitest.BuildConfig
 import com.example.rappitest.models.GenresResponse
 import com.example.rappitest.models.MoviePageResponse
-import okhttp3.Interceptor
+import com.example.rappitest.models.VideosResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -52,21 +52,36 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
 
     override fun getPopularMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit) {
         val callback =
-            TmdbCallback<MoviePageResponse>(isLoadingPage, requestErrorAction, RequestAction.GET_MOST_POPULAR, onSuccessFun)
+            TmdbCallback<MoviePageResponse>(
+                isLoadingPage,
+                requestErrorAction,
+                RequestAction.GET_MOST_POPULAR,
+                onSuccessFun
+            )
         val popularMoviesCall = tmdbService.getPopularMovies(BuildConfig.TmdbApiKey, lang, page)
         popularMoviesCall.enqueue(callback)
     }
 
     override fun getTopRatedMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit) {
         val callback =
-            TmdbCallback<MoviePageResponse>(isLoadingPage, requestErrorAction, RequestAction.GET_MOST_POPULAR, onSuccessFun)
+            TmdbCallback<MoviePageResponse>(
+                isLoadingPage,
+                requestErrorAction,
+                RequestAction.GET_MOST_POPULAR,
+                onSuccessFun
+            )
         val popularMoviesCall = tmdbService.getTopRatedMovies(BuildConfig.TmdbApiKey, lang, page)
         popularMoviesCall.enqueue(callback)
     }
 
     override fun getUpcomingMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit) {
         val callback =
-            TmdbCallback<MoviePageResponse>(isLoadingPage, requestErrorAction, RequestAction.GET_MOST_POPULAR, onSuccessFun)
+            TmdbCallback<MoviePageResponse>(
+                isLoadingPage,
+                requestErrorAction,
+                RequestAction.GET_MOST_POPULAR,
+                onSuccessFun
+            )
         val popularMoviesCall = tmdbService.getUpcomingMovies(BuildConfig.TmdbApiKey, lang, page)
         popularMoviesCall.enqueue(callback)
     }
@@ -74,5 +89,17 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
     override fun getMovieGenres(): GenresResponse? {
         val movieGenresCall = tmdbService.getMovieGenres(BuildConfig.TmdbApiKey, lang)
         return movieGenresCall.execute().body()
+    }
+
+    override fun getMovieVideos(movieId: Int, onSuccessFun: (VideosResponse?) -> Unit) {
+        val callback =
+            TmdbCallback<VideosResponse>(
+                isLoadingPage,
+                requestErrorAction,
+                RequestAction.GET_MOST_POPULAR,
+                onSuccessFun
+            )
+        val movieVideosCall = tmdbService.getMovieVideos(movieId, BuildConfig.TmdbApiKey)
+        movieVideosCall.enqueue(callback)
     }
 }

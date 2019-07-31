@@ -6,7 +6,7 @@ import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rappitest.models.Movie
-import com.example.rappitest.models.MovieCategories
+import com.example.rappitest.models.Video
 import com.example.rappitest.repository.local.TmdbDao
 import com.example.rappitest.repository.remote.RequestAction
 import com.example.rappitest.repository.remote.TmdbServiceApi
@@ -20,14 +20,12 @@ class TmdbRepositoryImpl @Inject constructor(
     private val tmdbDao: TmdbDao,
     private val tmdbService: TmdbServiceApi
 ) : TmdbRepositoryApi {
-    private var offlineMode = false
     private val movies = mutableListOf<Movie>()
     private val liveMovies = MutableLiveData<List<Movie>>()
     private var movieGenres: Map<Int, String> = mutableMapOf()
-    private val movieCategories: MovieCategories
+    private var movieVideos = mutableMapOf<Int, MutableLiveData<List<Video>>>()
 
     init {
-        movieCategories = tmdbDao.retrieveMovieCategories()
         fetchMovieGenres()
     }
 
@@ -55,8 +53,18 @@ class TmdbRepositoryImpl @Inject constructor(
         return movieGenres
     }
 
+    override fun getMovieVideos(movieId: Int): LiveData<List<Video>> {
+        if (movieVideos[movieId] == null) {
+            val liveList = MutableLiveData<List<Video>>()
+            movieVideos[movieId] = liveList
+            return liveList
+        }
+        return movieVideos[movieId]!!
+    }
+
     override fun fetchPopularMovies(page: Int) {
         if (!isNetworkAvailable() && movies.isEmpty()) {
+            val movieCategories = tmdbDao.retrieveMovieCategories()
             val ids = movieCategories.get(Movie.Category.Popular)!!
             val idsToFetch = ids.filter { id -> movies.find { movie -> movie.id == id } == null }
             val movies = tmdbDao.retrieveMoviesWithIds(idsToFetch)
@@ -82,10 +90,18 @@ class TmdbRepositoryImpl @Inject constructor(
 
     override fun fetchUpcomingMovies(page: Int) {
         tmdbService.getUpcomingMovies(page) {
-            val newMovies = it?.results!!
-            tmdbDao.persistMovies(newMovies)
-            tmdbDao.updateMovieCategories(newMovies, Movie.Category.Upcoming)
-            addMovies(newMovies)
+            it?.results?.let {
+                tmdbDao.persistMovies(it)
+                tmdbDao.updateMovieCategories(it, Movie.Category.Upcoming)
+                addMovies(it)
+            }
+        }
+    }
+
+    override fun fetchMovieVideos(movieId: Int) {
+        tmdbService.getMovieVideos(movieId) {
+            val videos = it?.results!!
+            movieVideos[movieId]!!.value = videos
         }
     }
 

@@ -30,7 +30,7 @@ class PalleteRequestListener(private val view: ImageView, private val mode: Port
     ): Boolean {
         if (resource != null) {
             val palette = Palette.from(resource.toBitmap()).generate()
-            val color = palette.getDarkMutedColor(Color.TRANSPARENT)
+            val color = palette.getDominantColor(Color.TRANSPARENT)
             view.setColorFilter(color, mode)
         }
         return false

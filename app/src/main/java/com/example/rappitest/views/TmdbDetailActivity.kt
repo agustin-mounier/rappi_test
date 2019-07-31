@@ -2,9 +2,13 @@ package com.example.rappitest.views
 
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -28,21 +32,44 @@ class TmdbDetailActivity : AppCompatActivity() {
     private val viewModel: TmdbDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[TmdbDetailViewModel::class.java]
     }
+    private var movieId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tmdb_detail_layout)
-        val movieId = intent.getIntExtra(MOVIE_EXTRA, -1)
+        movieId = intent.getIntExtra(MOVIE_EXTRA, -1)
+        viewModel.fetchMovieVideos(movieId)
         val movie = viewModel.getMovie(movieId)
         movie?.let { setUpView(it) }
+        initMoviePreviews()
     }
 
     private fun setUpView(movie: Movie) {
-        Glide.with(this).load(movie.getPosterUrl()).transform(RoundedCorners(20)).into(movie_detail_poster)
-        Glide.with(this).load(movie.getBackDropPath()).listener(PalleteRequestListener(movie_detail_backdrop, PorterDuff.Mode.MULTIPLY)).centerCrop().into(movie_detail_backdrop)
+        val glideManager = Glide.with(this)
+        glideManager.load(movie.getPosterUrl())
+            .listener(PalleteRequestListener(movie_detail_backdrop, PorterDuff.Mode.MULTIPLY))
+            .transform(RoundedCorners(20))
+            .into(movie_detail_poster)
+        glideManager
+            .load(movie.getBackDropPath())
+            .centerCrop()
+            .into(movie_detail_backdrop)
         movie_detail_title.text = movie.title
         movie_detail_year.text = movie.release_date!!.substring(0, 4)
         movie_overview.text = movie.overview
+    }
+
+    private fun initMoviePreviews() {
+        val movieVideos = viewModel.getMovieVideos(movieId)
+        val layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        videos_list.layoutManager = layoutManager
+        videos_list.adapter = VideosListAdapter(movieVideos)
+        movieVideos.observe(this, Observer {
+            if (it.isNotEmpty()) {
+                movie_previews.visibility = View.VISIBLE
+                (videos_list.adapter as VideosListAdapter).notifyDataSetChanged()
+            }
+        })
     }
 }

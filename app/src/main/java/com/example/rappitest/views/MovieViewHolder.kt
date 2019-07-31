@@ -35,7 +35,6 @@ class MovieViewHolder(itemView: View, private val genresMap: Map<Int, String>) :
         val uri = Uri.parse(movie.getPosterUrl())
         Glide.with(itemView)
             .load(uri)
-            .transform(CenterCrop(), RoundedCorners(20))
             .listener(PalleteRequestListener(itemView.movie_image, PorterDuff.Mode.OVERLAY))
             .into(itemView.movie_image)
     }

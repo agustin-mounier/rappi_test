@@ -1,10 +1,11 @@
 package com.example.rappitest.models
 
+import com.example.rappitest.repository.remote.TmdbService.Companion.BaseImgUrl
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
-open class Movie (
+open class Movie(
     @PrimaryKey
     var id: Int = 0,
     var poster_path: String? = null,
@@ -26,15 +27,11 @@ open class Movie (
         Popular, TopRated, Upcoming
     }
 
-    //TODO: meter distintas resoluciones y sacar de aca.
-    companion object {
-        const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500"
-    }
     fun getPosterUrl(): String {
-        return BASE_IMAGE_URL + poster_path
+        return BaseImgUrl + poster_path
     }
 
     fun getBackDropPath(): String {
-        return BASE_IMAGE_URL + backdrop_path
+        return BaseImgUrl + backdrop_path
     }
 }
