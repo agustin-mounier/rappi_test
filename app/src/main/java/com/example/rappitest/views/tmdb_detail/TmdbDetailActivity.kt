@@ -1,4 +1,4 @@
-package com.example.rappitest.views.TmdbDetail
+package com.example.rappitest.views.tmdb_detail
 
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -50,10 +50,11 @@ class TmdbDetailActivity : AppCompatActivity() {
             .listener(PalleteRequestListener(movie_detail_backdrop, PorterDuff.Mode.MULTIPLY))
             .transform(RoundedCorners(20))
             .into(movie_detail_poster)
-        glideManager
-            .load(movie.getBackDropPath(this))
-            .centerCrop()
-            .into(movie_detail_backdrop)
+
+        movie.getBackDropPath(this)?.let {
+            glideManager.load(it).centerCrop().into(movie_detail_backdrop)
+        }
+
         movie_detail_title.text = movie.title
         movie_detail_year.text = movie.release_date!!.substring(0, 4)
         movie_overview.text = movie.overview

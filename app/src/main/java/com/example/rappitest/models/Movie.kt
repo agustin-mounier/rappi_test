@@ -34,7 +34,7 @@ open class Movie(
         return BaseImgUrl + PosterResolution + poster_path
     }
 
-    fun getBackDropPath(context: Context): String {
-        return BaseImgUrl + ResolutionUtils.getBackDropResolution(context) + backdrop_path
+    fun getBackDropPath(context: Context): String? {
+        return backdrop_path?.let{ BaseImgUrl + ResolutionUtils.getBackDropResolution(context) + it }
     }
 }

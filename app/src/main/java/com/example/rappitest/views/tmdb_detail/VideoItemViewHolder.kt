@@ -1,4 +1,4 @@
-package com.example.rappitest.views.TmdbDetail
+package com.example.rappitest.views.tmdb_detail
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -16,11 +16,9 @@ import kotlinx.android.synthetic.main.video_list_item.view.*
 class VideoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     YouTubeThumbnailView.OnInitializedListener {
 
-    private var youtubeLoader: YouTubeThumbnailLoader? = null
     private var video: Video? = null
 
     init {
-        itemView.movie_thumbnail.initialize(BuildConfig.YouTubeApiKey, this)
         itemView.setOnClickListener {
             playYoutubeVideo(video!!.key)
         }
@@ -28,11 +26,7 @@ class VideoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
 
     fun bind(video: Video) {
         this.video = video
-        youtubeLoader?.let { setThumbnail(video) }
-    }
-
-    private fun setThumbnail(video: Video?) {
-        youtubeLoader?.setVideo(video?.key)
+        itemView.movie_thumbnail.initialize(BuildConfig.YouTubeApiKey, this)
     }
 
     private fun playYoutubeVideo(key: String?) {
@@ -46,9 +40,14 @@ class VideoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         }
     }
 
-    override fun onInitializationSuccess(p0: YouTubeThumbnailView?, p1: YouTubeThumbnailLoader?) {
-        youtubeLoader = p1
-        setThumbnail(video)
+    override fun onInitializationSuccess(p0: YouTubeThumbnailView?, loader: YouTubeThumbnailLoader?) {
+        loader?.setVideo(video?.key)
+        loader?.setOnThumbnailLoadedListener(object: YouTubeThumbnailLoader.OnThumbnailLoadedListener {
+            override fun onThumbnailLoaded(p0: YouTubeThumbnailView?, p1: String?) {
+                loader.release()
+            }
+            override fun onThumbnailError(p0: YouTubeThumbnailView?, p1: YouTubeThumbnailLoader.ErrorReason?) { }
+        })
     }
 
     override fun onInitializationFailure(p0: YouTubeThumbnailView?, p1: YouTubeInitializationResult?) {

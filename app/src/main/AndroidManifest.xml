@@ -17,7 +17,7 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.NoActionBar">
 
-        <activity android:name=".views.TmdbFeed.TmdbFeedActivity">
+        <activity android:name=".views.tmdb_feed.TmdbFeedActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".views.TmdbDetail.TmdbDetailActivity"/>
+        <activity android:name=".views.tmdb_detail.TmdbDetailActivity"/>
     </application>
 
 </manifest>

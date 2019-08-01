@@ -1,4 +1,4 @@
-package com.example.rappitest.views.TmdbDetail
+package com.example.rappitest.views.tmdb_detail
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

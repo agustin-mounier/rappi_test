@@ -1,4 +1,4 @@
-package com.example.rappitest.views.TmdbFeed
+package com.example.rappitest.views.tmdb_feed
 
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -7,8 +7,8 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.example.rappitest.models.Movie
 import com.example.rappitest.utils.PalleteRequestListener
-import com.example.rappitest.views.TmdbDetail.TmdbDetailActivity
-import com.example.rappitest.views.TmdbDetail.TmdbDetailActivity.Companion.MOVIE_EXTRA
+import com.example.rappitest.views.tmdb_detail.TmdbDetailActivity
+import com.example.rappitest.views.tmdb_detail.TmdbDetailActivity.Companion.MOVIE_EXTRA
 import kotlinx.android.synthetic.main.movie_item_view.view.*
 
 
