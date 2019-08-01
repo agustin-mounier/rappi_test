@@ -1,15 +1,14 @@
-package com.example.rappitest.views
+package com.example.rappitest.views.TmdbFeed
 
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.view.View
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.rappitest.models.Movie
 import com.example.rappitest.utils.PalleteRequestListener
-import com.example.rappitest.views.TmdbDetailActivity.Companion.MOVIE_EXTRA
+import com.example.rappitest.views.TmdbDetail.TmdbDetailActivity
+import com.example.rappitest.views.TmdbDetail.TmdbDetailActivity.Companion.MOVIE_EXTRA
 import kotlinx.android.synthetic.main.movie_item_view.view.*
 
 

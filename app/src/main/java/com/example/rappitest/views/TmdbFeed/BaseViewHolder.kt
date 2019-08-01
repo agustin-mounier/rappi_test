@@ -1,4 +1,4 @@
-package com.example.rappitest.views
+package com.example.rappitest.views.TmdbFeed
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

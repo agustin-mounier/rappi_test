@@ -6,9 +6,10 @@ import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rappitest.models.Movie
+import com.example.rappitest.models.MoviePageResponse
 import com.example.rappitest.models.Video
 import com.example.rappitest.repository.local.TmdbDao
-import com.example.rappitest.repository.remote.RequestAction
+import com.example.rappitest.repository.remote.ErrorType
 import com.example.rappitest.repository.remote.TmdbServiceApi
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -37,7 +38,7 @@ class TmdbRepositoryImpl @Inject constructor(
         return tmdbService.isLoadingPage()
     }
 
-    override fun getRequestErrorAction(): LiveData<RequestAction> {
+    override fun getRequestErrorType(): LiveData<ErrorType> {
         return tmdbService.getRequestErrorAction()
     }
 
@@ -63,39 +64,15 @@ class TmdbRepositoryImpl @Inject constructor(
     }
 
     override fun fetchPopularMovies(page: Int) {
-        if (!isNetworkAvailable() && movies.isEmpty()) {
-            val movieCategories = tmdbDao.retrieveMovieCategories()
-            val ids = movieCategories.get(Movie.Category.Popular)!!
-            val idsToFetch = ids.filter { id -> movies.find { movie -> movie.id == id } == null }
-            val movies = tmdbDao.retrieveMoviesWithIds(idsToFetch)
-            addMovies(movies)
-        } else {
-            tmdbService.getPopularMovies(page) {
-                val newMovies = it?.results!!
-                tmdbDao.persistMovies(newMovies)
-                tmdbDao.updateMovieCategories(newMovies, Movie.Category.Popular)
-                addMovies(newMovies)
-            }
-        }
+        retrieveOrFetchMovies(page, Movie.Category.Popular, tmdbService::getPopularMovies)
     }
 
     override fun fetchTopRatedMovies(page: Int) {
-        tmdbService.getTopRatedMovies(page) {
-            val newMovies = it?.results!!
-            tmdbDao.persistMovies(newMovies)
-            tmdbDao.updateMovieCategories(newMovies, Movie.Category.TopRated)
-            addMovies(newMovies)
-        }
+        retrieveOrFetchMovies(page, Movie.Category.TopRated, tmdbService::getTopRatedMovies)
     }
 
     override fun fetchUpcomingMovies(page: Int) {
-        tmdbService.getUpcomingMovies(page) {
-            it?.results?.let {
-                tmdbDao.persistMovies(it)
-                tmdbDao.updateMovieCategories(it, Movie.Category.Upcoming)
-                addMovies(it)
-            }
-        }
+        retrieveOrFetchMovies(page, Movie.Category.Upcoming, tmdbService::getUpcomingMovies)
     }
 
     override fun fetchMovieVideos(movieId: Int) {
@@ -107,6 +84,27 @@ class TmdbRepositoryImpl @Inject constructor(
 
     override fun clearMovies() {
         movies.clear()
+    }
+
+    private fun retrieveOrFetchMovies(
+        page: Int,
+        movieCategory: Movie.Category,
+        serviceCall: (Int, onSuccessFun: (MoviePageResponse?) -> Unit) -> Unit
+    ) {
+        if (!isNetworkAvailable() && movies.isEmpty()) { // fetch movies locally
+            val movieCategories = tmdbDao.retrieveMovieCategories()
+            val ids = movieCategories.get(movieCategory)!!
+            val idsToFetch = ids.filter { id -> movies.find { movie -> movie.id == id } == null }
+            val movies = tmdbDao.retrieveMoviesWithIds(idsToFetch)
+            addMovies(movies)
+        } else { // fetch movies remotely
+            serviceCall(page) {
+                val newMovies = it?.results!!
+                tmdbDao.persistMovies(newMovies)
+                tmdbDao.updateMovieCategories(newMovies, movieCategory)
+                addMovies(newMovies)
+            }
+        }
     }
 
     private fun addMovies(newMovies: List<Movie>) {

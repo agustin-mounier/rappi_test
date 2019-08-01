@@ -1,6 +1,9 @@
 package com.example.rappitest.models
 
+import android.content.Context
 import com.example.rappitest.repository.remote.TmdbService.Companion.BaseImgUrl
+import com.example.rappitest.repository.remote.TmdbService.Companion.PosterResolution
+import com.example.rappitest.utils.ResolutionUtils
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -28,10 +31,10 @@ open class Movie(
     }
 
     fun getPosterUrl(): String {
-        return BaseImgUrl + poster_path
+        return BaseImgUrl + PosterResolution + poster_path
     }
 
-    fun getBackDropPath(): String {
-        return BaseImgUrl + backdrop_path
+    fun getBackDropPath(context: Context): String {
+        return BaseImgUrl + ResolutionUtils.getBackDropResolution(context) + backdrop_path
     }
 }

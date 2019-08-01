@@ -1,4 +1,4 @@
-package com.example.rappitest.views
+package com.example.rappitest.utils
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

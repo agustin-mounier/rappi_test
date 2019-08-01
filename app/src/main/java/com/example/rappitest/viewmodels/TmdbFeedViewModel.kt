@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.rappitest.models.Movie
 import com.example.rappitest.repository.TmdbRepositoryApi
+import com.example.rappitest.repository.remote.ErrorType
 import javax.inject.Inject
 
 class TmdbFeedViewModel @Inject constructor(private val repository: TmdbRepositoryApi) : ViewModel() {
@@ -21,6 +22,10 @@ class TmdbFeedViewModel @Inject constructor(private val repository: TmdbReposito
 
     fun loadMoreMovies() {
         loadMoreMovies(page++)
+    }
+
+    fun getRequestErrorType(): LiveData<ErrorType> {
+        return repository.getRequestErrorType()
     }
 
     fun fetchMostPopular() {
@@ -44,9 +49,12 @@ class TmdbFeedViewModel @Inject constructor(private val repository: TmdbReposito
         loadMoreMovies()
     }
 
-
     fun isLoading(): LiveData<Boolean> {
         return repository.isLoading()
+    }
+
+    fun getCurrentPage(): Int {
+        return if (page == 1) 1 else page - 1
     }
 
     fun isLoadingPage(): LiveData<Boolean> {

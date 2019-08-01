@@ -1,4 +1,4 @@
-package com.example.rappitest.views
+package com.example.rappitest.views.TmdbDetail
 
 import android.content.ActivityNotFoundException
 import android.content.Intent

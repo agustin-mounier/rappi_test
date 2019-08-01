@@ -1,4 +1,4 @@
-package com.example.rappitest.views
+package com.example.rappitest.views.TmdbDetail
 
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.example.rappitest.R
 import com.example.rappitest.models.Movie
 import com.example.rappitest.utils.PalleteRequestListener
@@ -52,7 +51,7 @@ class TmdbDetailActivity : AppCompatActivity() {
             .transform(RoundedCorners(20))
             .into(movie_detail_poster)
         glideManager
-            .load(movie.getBackDropPath())
+            .load(movie.getBackDropPath(this))
             .centerCrop()
             .into(movie_detail_backdrop)
         movie_detail_title.text = movie.title

@@ -10,8 +10,8 @@ import retrofit2.Response
  */
 class TmdbCallback<T>(
     private val isLoading: MutableLiveData<Boolean>,
-    private val requestErrorAction: MutableLiveData<RequestAction>,
-    private val requestAction: RequestAction,
+    private val requestErrorType: MutableLiveData<ErrorType>,
+    private val errorType: ErrorType,
     private val onSuccessFun: (T?) -> Unit
 ) : Callback<T> {
 
@@ -21,7 +21,7 @@ class TmdbCallback<T>(
 
     override fun onFailure(call: Call<T>, t: Throwable) {
         isLoading.value = false
-        requestErrorAction.value = requestAction
+        requestErrorType.value = errorType
     }
 
     override fun onResponse(call: Call<T>, response: Response<T>) {

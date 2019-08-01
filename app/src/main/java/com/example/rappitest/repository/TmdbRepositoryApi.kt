@@ -3,7 +3,7 @@ package com.example.rappitest.repository
 import androidx.lifecycle.LiveData
 import com.example.rappitest.models.Movie
 import com.example.rappitest.models.Video
-import com.example.rappitest.repository.remote.RequestAction
+import com.example.rappitest.repository.remote.ErrorType
 
 interface TmdbRepositoryApi {
 
@@ -11,7 +11,7 @@ interface TmdbRepositoryApi {
 
     fun isLoadingPage(): LiveData<Boolean>
 
-    fun getRequestErrorAction(): LiveData<RequestAction>
+    fun getRequestErrorType(): LiveData<ErrorType>
 
     fun getMovie(movieId: Int): Movie?
 

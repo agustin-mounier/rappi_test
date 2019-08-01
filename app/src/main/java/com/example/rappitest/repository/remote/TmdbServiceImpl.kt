@@ -12,6 +12,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,10 +23,15 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
     private val lang = Locale.getDefault().language
     private val isLoading = MutableLiveData(false)
     private val isLoadingPage = MutableLiveData(false)
-    private val requestErrorAction = MutableLiveData(RequestAction.NONE)
+    private val requestErrorAction = MutableLiveData(ErrorType.NONE)
+    private val timeOut: Long = 10
+
 
     init {
         val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(timeOut, TimeUnit.SECONDS)
+            .writeTimeout(timeOut, TimeUnit.SECONDS)
+            .readTimeout(timeOut, TimeUnit.SECONDS)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 
@@ -46,7 +52,7 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
         return isLoadingPage
     }
 
-    override fun getRequestErrorAction(): LiveData<RequestAction> {
+    override fun getRequestErrorAction(): LiveData<ErrorType> {
         return requestErrorAction
     }
 
@@ -55,7 +61,7 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
             TmdbCallback<MoviePageResponse>(
                 isLoadingPage,
                 requestErrorAction,
-                RequestAction.GET_MOST_POPULAR,
+                ErrorType.FULL_SCREEN,
                 onSuccessFun
             )
         val popularMoviesCall = tmdbService.getPopularMovies(BuildConfig.TmdbApiKey, lang, page)
@@ -67,7 +73,7 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
             TmdbCallback<MoviePageResponse>(
                 isLoadingPage,
                 requestErrorAction,
-                RequestAction.GET_MOST_POPULAR,
+                ErrorType.FULL_SCREEN,
                 onSuccessFun
             )
         val popularMoviesCall = tmdbService.getTopRatedMovies(BuildConfig.TmdbApiKey, lang, page)
@@ -79,7 +85,7 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
             TmdbCallback<MoviePageResponse>(
                 isLoadingPage,
                 requestErrorAction,
-                RequestAction.GET_MOST_POPULAR,
+                ErrorType.FULL_SCREEN,
                 onSuccessFun
             )
         val popularMoviesCall = tmdbService.getUpcomingMovies(BuildConfig.TmdbApiKey, lang, page)
@@ -94,9 +100,9 @@ class TmdbServiceImpl @Inject constructor() : TmdbServiceApi {
     override fun getMovieVideos(movieId: Int, onSuccessFun: (VideosResponse?) -> Unit) {
         val callback =
             TmdbCallback<VideosResponse>(
-                isLoadingPage,
+                MutableLiveData(),
                 requestErrorAction,
-                RequestAction.GET_MOST_POPULAR,
+                ErrorType.FULL_SCREEN,
                 onSuccessFun
             )
         val movieVideosCall = tmdbService.getMovieVideos(movieId, BuildConfig.TmdbApiKey)

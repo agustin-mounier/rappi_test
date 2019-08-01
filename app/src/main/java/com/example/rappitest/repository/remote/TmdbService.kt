@@ -12,7 +12,8 @@ interface TmdbService {
 
     companion object {
         const val BaseUrl = "https://api.themoviedb.org/3/"
-        const val BaseImgUrl = "https://image.tmdb.org/t/p/w500" //TODO: check device resolution.
+        const val BaseImgUrl = "https://image.tmdb.org/t/p/" //TODO: check device resolution.
+        const val PosterResolution = "w500"
         const val PageSize = 20
     }
 

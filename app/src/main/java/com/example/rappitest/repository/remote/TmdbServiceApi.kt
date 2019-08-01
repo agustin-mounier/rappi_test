@@ -11,7 +11,7 @@ interface TmdbServiceApi {
 
     fun isLoadingPage(): LiveData<Boolean>
 
-    fun getRequestErrorAction(): LiveData<RequestAction>
+    fun getRequestErrorAction(): LiveData<ErrorType>
 
     fun getPopularMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit)
 
