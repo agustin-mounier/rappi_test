@@ -15,19 +15,15 @@ interface TmdbRepositoryApi {
 
     fun getMovie(movieId: Int): Movie?
 
-    fun getMovies(): LiveData<List<Movie>>
+    fun getMovies(category: Movie.Category): LiveData<List<Movie>>
 
     fun getMovieVideos(movieId: Int): LiveData<List<Video>>
 
     fun getMovieGenres(): Map<Int, String>
 
-    fun fetchPopularMovies(page: Int)
-
-    fun fetchTopRatedMovies(page: Int)
-
-    fun fetchUpcomingMovies(page: Int)
+    fun fetchMovies(category: Movie.Category)
 
     fun fetchMovieVideos(movieId: Int)
 
-    fun clearMovies()
+    fun getCurrentPage(category: Movie.Category): Int
 }

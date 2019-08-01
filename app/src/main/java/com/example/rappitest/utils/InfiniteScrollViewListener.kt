@@ -2,9 +2,13 @@ package com.example.rappitest.utils
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.rappitest.models.Movie
 
-class InfiniteScrollViewListener(private val mLayoutManager: LinearLayoutManager, private var loadData: () -> Unit) :
-    RecyclerView.OnScrollListener() {
+class InfiniteScrollViewListener(
+    private val category: Movie.Category,
+    private val mLayoutManager: LinearLayoutManager,
+    private var loadData: (Movie.Category) -> Unit
+) : RecyclerView.OnScrollListener() {
 
     private var visibleThreshold = 5
     private var previousTotalItemCount = 0
@@ -34,7 +38,7 @@ class InfiniteScrollViewListener(private val mLayoutManager: LinearLayoutManager
 
         // Time to load more items. The threshold was breached.
         if (!loading && lastVisibleItemPosition + visibleThreshold > totalItemCount) {
-            loadData()
+            loadData(category)
             loading = true
         }
     }

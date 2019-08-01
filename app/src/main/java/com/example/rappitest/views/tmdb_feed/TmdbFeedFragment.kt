@@ -32,7 +32,6 @@ class TmdbFeedFragment : Fragment() {
         }
     }
 
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: TmdbFeedViewModel by lazy {
@@ -41,7 +40,6 @@ class TmdbFeedFragment : Fragment() {
 
     private lateinit var scrollListener: InfiniteScrollViewListener
     private lateinit var category: Movie.Category
-    private var isFistLoad = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         AndroidSupportInjection.inject(this)
@@ -51,41 +49,26 @@ class TmdbFeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val layoutManager = LinearLayoutManager(view.context)
-        val adapter = MovieFeedAdapter(viewModel.getMovies(), viewModel.getMovieGenres(), viewModel.isLoadingPage())
+        val adapter =
+            MovieFeedAdapter(viewModel.getMovies(category), viewModel.getMovieGenres(), viewModel.isLoadingPage())
 
-        scrollListener = InfiniteScrollViewListener(layoutManager, viewModel::loadMoreMovies)
+        scrollListener = InfiniteScrollViewListener(category, layoutManager, viewModel::fetchMovies)
         movie_feed.layoutManager = layoutManager
         movie_feed.addOnScrollListener(scrollListener)
         movie_feed.adapter = adapter
         initObservers(adapter)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (isFistLoad) {
-            fetchMovies(category)
-            isFistLoad = false
-        }
+        viewModel.fetchMovies(category)
     }
 
     private fun initObservers(adapter: MovieFeedAdapter) {
-        // TODO: ver que onda
-        viewModel.getMovies().observe(this, Observer {
+        viewModel.getMovies(category).observe(this, Observer {
             adapter.notifyDataSetChanged()
-            if (viewModel.getCurrentPage() == 1) movie_feed.scheduleLayoutAnimation()
+            if (viewModel.getCurrentPage(category) == 1) movie_feed.scheduleLayoutAnimation()
         })
 
         viewModel.isLoadingPage().observe(this, Observer {
-            if (it && viewModel.getCurrentPage() == 1) showLoading() else hideLoading()
+            if (it && viewModel.getCurrentPage(category) == 1) showLoading() else hideLoading()
         })
-    }
-
-    private fun fetchMovies(category: Movie.Category) {
-        when (category) {
-            Movie.Category.Popular -> viewModel.fetchMostPopular()
-            Movie.Category.Upcoming -> viewModel.fetchUpcoming()
-            Movie.Category.TopRated -> viewModel.fetchTopRated()
-        }
     }
 
     private fun showLoading() {

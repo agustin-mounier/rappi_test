@@ -57,6 +57,7 @@ class TmdbFeedActivity : DaggerAppCompatActivity() {
     private fun initView() {
         val pagerAdapter = TmdbPagerAdapter(supportFragmentManager)
         movie_feed_pager.adapter = pagerAdapter
+        movie_feed_pager.offscreenPageLimit = 3
         movie_feed_pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(movie_tab_layout))
         movie_tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {

@@ -21,8 +21,18 @@ class TmdbRepositoryImpl @Inject constructor(
     private val tmdbDao: TmdbDao,
     private val tmdbService: TmdbServiceApi
 ) : TmdbRepositoryApi {
-    private val movies = mutableListOf<Movie>()
-    private val liveMovies = MutableLiveData<List<Movie>>()
+    private val pages = mutableMapOf(
+        Movie.Category.Popular to 1,
+        Movie.Category.TopRated to 1,
+        Movie.Category.Upcoming to 1
+    )
+
+    private val movies = mapOf(
+        Movie.Category.Popular to MutableLiveData(),
+        Movie.Category.TopRated to MutableLiveData(),
+        Movie.Category.Upcoming to MutableLiveData<MutableList<Movie>>()
+    )
+
     private var movieGenres: Map<Int, String> = mutableMapOf()
     private var movieVideos = mutableMapOf<Int, MutableLiveData<List<Video>>>()
 
@@ -46,8 +56,8 @@ class TmdbRepositoryImpl @Inject constructor(
         return tmdbDao.retrieveMovie(movieId)
     }
 
-    override fun getMovies(): LiveData<List<Movie>> {
-        return liveMovies
+    override fun getMovies(category: Movie.Category): LiveData<List<Movie>> {
+        return movies.getValue(category) as LiveData<List<Movie>>
     }
 
     override fun getMovieGenres(): Map<Int, String> {
@@ -63,16 +73,12 @@ class TmdbRepositoryImpl @Inject constructor(
         return movieVideos[movieId]!!
     }
 
-    override fun fetchPopularMovies(page: Int) {
-        retrieveOrFetchMovies(page, Movie.Category.Popular, tmdbService::getPopularMovies)
-    }
-
-    override fun fetchTopRatedMovies(page: Int) {
-        retrieveOrFetchMovies(page, Movie.Category.TopRated, tmdbService::getTopRatedMovies)
-    }
-
-    override fun fetchUpcomingMovies(page: Int) {
-        retrieveOrFetchMovies(page, Movie.Category.Upcoming, tmdbService::getUpcomingMovies)
+    override fun fetchMovies(category: Movie.Category) {
+        when (category) {
+            Movie.Category.Popular -> retrieveOrFetchMovies(Movie.Category.Popular, tmdbService::getPopularMovies)
+            Movie.Category.TopRated -> retrieveOrFetchMovies(Movie.Category.TopRated, tmdbService::getTopRatedMovies)
+            Movie.Category.Upcoming -> retrieveOrFetchMovies(Movie.Category.Upcoming, tmdbService::getUpcomingMovies)
+        }
     }
 
     override fun fetchMovieVideos(movieId: Int) {
@@ -82,34 +88,36 @@ class TmdbRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun clearMovies() {
-        movies.clear()
+    override fun getCurrentPage(category: Movie.Category): Int {
+        return pages[category]!!
     }
 
     private fun retrieveOrFetchMovies(
-        page: Int,
-        movieCategory: Movie.Category,
+        category: Movie.Category,
         serviceCall: (Int, onSuccessFun: (MoviePageResponse?) -> Unit) -> Unit
     ) {
-        if (!isNetworkAvailable() && movies.isEmpty()) { // fetch movies locally
+        if (!isNetworkAvailable() && getMovies(category).value.isNullOrEmpty()) { // fetch movies locally
             val movieCategories = tmdbDao.retrieveMovieCategories()
-            val ids = movieCategories.get(movieCategory)!!
-            val idsToFetch = ids.filter { id -> movies.find { movie -> movie.id == id } == null }
-            val movies = tmdbDao.retrieveMoviesWithIds(idsToFetch)
-            addMovies(movies)
+            val ids = movieCategories.get(category)!!
+            val movies = tmdbDao.retrieveMoviesWithIds(ids)
+            addMovies(category, movies)
         } else { // fetch movies remotely
-            serviceCall(page) {
+            serviceCall(pages[category]!!) {
                 val newMovies = it?.results!!
                 tmdbDao.persistMovies(newMovies)
-                tmdbDao.updateMovieCategories(newMovies, movieCategory)
-                addMovies(newMovies)
+                tmdbDao.updateMovieCategories(newMovies, category)
+                addMovies(category, newMovies)
+                pages[category] = pages[category]!! + 1
             }
         }
     }
 
-    private fun addMovies(newMovies: List<Movie>) {
-        movies.addAll(newMovies)
-        liveMovies.postValue(movies)
+    private fun addMovies(category: Movie.Category, newMovies: List<Movie>) {
+        val movieList = movies.getValue(category)
+        if (movieList.value == null) {
+            movieList.value = mutableListOf()
+        }
+        movieList.value!!.addAll(newMovies)
     }
 
     private fun fetchMovieGenres() {
