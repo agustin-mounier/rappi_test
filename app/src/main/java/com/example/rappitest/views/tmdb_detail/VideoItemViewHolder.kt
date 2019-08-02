@@ -35,7 +35,7 @@ class VideoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
 
         try {
             itemView.context.startActivity(appIntent)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Throwable) {
             itemView.context.startActivity(webIntent)
         }
     }

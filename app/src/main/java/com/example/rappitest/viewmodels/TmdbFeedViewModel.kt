@@ -14,7 +14,7 @@ class TmdbFeedViewModel @Inject constructor(private val repository: TmdbReposito
         return repository.getMovies(category)
     }
 
-    fun getMovieGenres(): Map<Int, String> {
+    fun getMovieGenres(): LiveData<Map<Int, String>> {
         return repository.getMovieGenres()
     }
 

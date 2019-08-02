@@ -12,7 +12,7 @@ import com.example.rappitest.models.Movie
 
 class MovieFeedAdapter(
     private val movies: LiveData<List<Movie>>,
-    private val genresMap: Map<Int, String>,
+    private val genresMap: LiveData<Map<Int, String>>,
     private val isLoadingPage: LiveData<Boolean>
 ) : RecyclerView.Adapter<BaseViewHolder>(), Filterable {
 
@@ -28,7 +28,7 @@ class MovieFeedAdapter(
         return when (viewType) {
             MOVIE_TYPE -> {
                 val view = layoutInflater.inflate(R.layout.movie_item_view, parent, false)
-                MovieViewHolder(view, genresMap)
+                MovieViewHolder(view, genresMap.value!!)
             }
             LOADING_TYPE -> {
                 val view = layoutInflater.inflate(R.layout.loading_item_view, parent, false)

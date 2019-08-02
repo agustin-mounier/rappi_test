@@ -19,7 +19,7 @@ interface TmdbServiceApi {
 
     fun getUpcomingMovies(page: Int, onSuccessFun: (MoviePageResponse?) -> Unit)
 
-    fun getMovieGenres(): GenresResponse?
+    fun getMovieGenres(onSuccessFun: (GenresResponse?) -> Unit)
 
     fun getMovieVideos(movieId: Int, onSuccessFun: (VideosResponse?) -> Unit)
 }

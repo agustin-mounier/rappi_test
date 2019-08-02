@@ -12,6 +12,7 @@ import javax.inject.Singleton
     RealmModule::class,
     ViewModelsModule::class,
     ActivitiesModule::class,
+    Providers::class,
     AndroidInjectionModule::class
 ])
 interface AppComponent {

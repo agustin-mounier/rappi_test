@@ -19,7 +19,7 @@ interface TmdbRepositoryApi {
 
     fun getMovieVideos(movieId: Int): LiveData<List<Video>>
 
-    fun getMovieGenres(): Map<Int, String>
+    fun getMovieGenres(): LiveData<Map<Int, String>>
 
     fun fetchMovies(category: Movie.Category)
 

@@ -57,10 +57,13 @@ class TmdbFeedFragment : Fragment() {
         movie_feed.addOnScrollListener(scrollListener)
         movie_feed.adapter = adapter
         initObservers(adapter)
-        viewModel.fetchMovies(category)
     }
 
     private fun initObservers(adapter: MovieFeedAdapter) {
+        viewModel.getMovieGenres().observe(this, Observer {
+            if (!it.isNullOrEmpty()) viewModel.fetchMovies(category)
+        })
+
         viewModel.getMovies(category).observe(this, Observer {
             adapter.notifyDataSetChanged()
             if (viewModel.getCurrentPage(category) == 1) movie_feed.scheduleLayoutAnimation()

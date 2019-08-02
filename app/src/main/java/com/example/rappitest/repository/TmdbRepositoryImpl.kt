@@ -21,19 +21,16 @@ class TmdbRepositoryImpl @Inject constructor(
     private val tmdbDao: TmdbDao,
     private val tmdbService: TmdbServiceApi
 ) : TmdbRepositoryApi {
-    private val pages = mutableMapOf(
-        Movie.Category.Popular to 1,
-        Movie.Category.TopRated to 1,
-        Movie.Category.Upcoming to 1
-    )
+    private val pages =
+        mutableMapOf(Movie.Category.Popular to 1, Movie.Category.TopRated to 1, Movie.Category.Upcoming to 1)
 
-    private val movies = mapOf(
+    private val movies = mapOf<Movie.Category, MutableLiveData<MutableList<Movie>>>(
         Movie.Category.Popular to MutableLiveData(),
         Movie.Category.TopRated to MutableLiveData(),
-        Movie.Category.Upcoming to MutableLiveData<MutableList<Movie>>()
+        Movie.Category.Upcoming to MutableLiveData()
     )
 
-    private var movieGenres: Map<Int, String> = mutableMapOf()
+    private var movieGenres = MutableLiveData<Map<Int, String>>()
     private var movieVideos = mutableMapOf<Int, MutableLiveData<List<Video>>>()
 
     init {
@@ -60,7 +57,7 @@ class TmdbRepositoryImpl @Inject constructor(
         return movies.getValue(category) as LiveData<List<Movie>>
     }
 
-    override fun getMovieGenres(): Map<Int, String> {
+    override fun getMovieGenres(): LiveData<Map<Int, String>> {
         return movieGenres
     }
 
@@ -96,7 +93,7 @@ class TmdbRepositoryImpl @Inject constructor(
         category: Movie.Category,
         serviceCall: (Int, onSuccessFun: (MoviePageResponse?) -> Unit) -> Unit
     ) {
-        if (!isNetworkAvailable() && getMovies(category).value.isNullOrEmpty()) { // fetch movies locally
+        if (!isNetworkAvailable() && getMovies(category).value?.size == 0) { // fetch movies locally
             val movieCategories = tmdbDao.retrieveMovieCategories()
             val ids = movieCategories.get(category)!!
             val movies = tmdbDao.retrieveMoviesWithIds(ids)
@@ -123,15 +120,16 @@ class TmdbRepositoryImpl @Inject constructor(
     private fun fetchMovieGenres() {
         val genres = tmdbDao.retrieveMovieGenres()
         if (genres.isEmpty()) {
-            val genresResponse = tmdbService.getMovieGenres()
-            genresResponse?.let {
-                val movieMap = mutableMapOf<Int, String>()
-                it.genres?.forEach { genre -> movieMap[genre.id] = genre.name!! }
-                movieGenres = movieMap
-                tmdbDao.persistMovieGenres(movieGenres)
+            tmdbService.getMovieGenres { response ->
+                response?.let {
+                    val movieMap = mutableMapOf<Int, String>()
+                    it.genres?.forEach { genre -> movieMap[genre.id] = genre.name!! }
+                    movieGenres.value = movieMap
+                    tmdbDao.persistMovieGenres(movieMap)
+                }
             }
         } else {
-            movieGenres = genres
+            movieGenres.value = genres
         }
     }
 

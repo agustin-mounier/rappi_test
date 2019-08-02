@@ -16,6 +16,7 @@ android {
     }
     buildTypes {
         debug {
+            testCoverageEnabled true
             buildConfigField 'String', "TmdbApiKey", tmdb_api_key
             buildConfigField 'String', "YouTubeApiKey", youtube_api_key
         }
@@ -32,6 +33,11 @@ android {
     }
     dataBinding {
         enabled = true
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
@@ -67,8 +73,9 @@ dependencies {
     compileOnly "org.glassfish:javax.annotation:3.1.1"
 
     // RxJava
-    //implementation "io.reactivex.rxjava2:rxjava:2.2.8"
-    //implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+    //implementation "io.reactivex.rxjava2:rxjava:2.2.10"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    //implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.9.0") {
@@ -81,7 +88,14 @@ dependencies {
 
     // Testing
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.28.2'
+    testImplementation 'org.robolectric:robolectric:4.3'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+    testImplementation 'androidx.arch.core:core-testing:2.0.1'
+
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+
     implementation 'androidx.palette:palette-ktx:1.0.0'
 }

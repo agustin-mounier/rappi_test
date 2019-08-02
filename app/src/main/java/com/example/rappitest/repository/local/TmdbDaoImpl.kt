@@ -40,7 +40,14 @@ class TmdbDaoImpl @Inject constructor(private val realm: Realm) : TmdbDao {
     }
 
     override fun retrieveMovieCategories(): MovieCategories {
-        return realm.where(MovieCategories::class.java).findFirst() ?: realm.createObject(MovieCategories::class.java)
+        val movieCategories = realm.where(MovieCategories::class.java).findFirst()
+        if (movieCategories == null) {
+            realm.beginTransaction()
+            val newMovieCategories = realm.createObject(MovieCategories::class.java)
+            realm.commitTransaction()
+            return newMovieCategories
+        }
+        return movieCategories
     }
 
     override fun persistMovieGenres(movieGenres: Map<Int, String>) {

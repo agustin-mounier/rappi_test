@@ -11,8 +11,8 @@ import retrofit2.Response
 class TmdbCallback<T>(
     private val isLoading: MutableLiveData<Boolean>,
     private val requestErrorType: MutableLiveData<ErrorType>,
-    private val errorType: ErrorType,
-    private val onSuccessFun: (T?) -> Unit
+    val errorType: ErrorType,
+    val onSuccessFun: (T?) -> Unit
 ) : Callback<T> {
 
     init {
@@ -28,5 +28,6 @@ class TmdbCallback<T>(
         isLoading.value = false
         onSuccessFun(response.body())
     }
+
 
 }
