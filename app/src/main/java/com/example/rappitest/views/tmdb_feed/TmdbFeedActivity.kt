@@ -78,6 +78,7 @@ class TmdbFeedActivity : DaggerAppCompatActivity() {
     private fun displayError(errorType: ErrorType) {
         when (errorType) {
             ErrorType.SNACKBAR -> {
+
             }
             ErrorType.FULL_SCREEN -> {
                 //network_error_text.visibility = View.VISIBLE

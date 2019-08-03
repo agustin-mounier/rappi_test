@@ -1,5 +1,6 @@
 package com.example.rappitest.utils
 
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rappitest.models.Movie
@@ -7,6 +8,7 @@ import com.example.rappitest.models.Movie
 class InfiniteScrollViewListener(
     private val category: Movie.Category,
     private val mLayoutManager: LinearLayoutManager,
+    private val isLoadingPage: LiveData<Boolean>,
     private var loadData: (Movie.Category) -> Unit
 ) : RecyclerView.OnScrollListener() {
 
@@ -26,20 +28,15 @@ class InfiniteScrollViewListener(
         // List was invalidated. Reset state.
         if (totalItemCount < previousTotalItemCount) {
             this.previousTotalItemCount = totalItemCount
-            if (totalItemCount == 0) {
-                this.loading = true
-            }
         }
         // Finished loading new items.
-        if (loading && totalItemCount > previousTotalItemCount) {
-            loading = false
+        if (isLoadingPage.value!! && totalItemCount > previousTotalItemCount) {
             previousTotalItemCount = totalItemCount
         }
 
         // Time to load more items. The threshold was breached.
-        if (!loading && lastVisibleItemPosition + visibleThreshold > totalItemCount) {
+        if (!isLoadingPage.value!! && lastVisibleItemPosition + visibleThreshold > totalItemCount) {
             loadData(category)
-            loading = true
         }
     }
 
@@ -50,5 +47,9 @@ class InfiniteScrollViewListener(
 
     fun setEnable(bool: Boolean) {
         this.enabled = bool
+    }
+
+    fun setLoading(bool: Boolean) {
+        this.loading = bool
     }
 }

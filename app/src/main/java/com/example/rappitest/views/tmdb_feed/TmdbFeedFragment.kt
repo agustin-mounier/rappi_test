@@ -52,7 +52,7 @@ class TmdbFeedFragment : Fragment() {
         val adapter =
             MovieFeedAdapter(viewModel.getMovies(category), viewModel.getMovieGenres(), viewModel.isLoadingPage())
 
-        scrollListener = InfiniteScrollViewListener(category, layoutManager, viewModel::fetchMovies)
+        scrollListener = InfiniteScrollViewListener(category, layoutManager, viewModel.isLoadingPage(), viewModel::fetchMovies)
         movie_feed.layoutManager = layoutManager
         movie_feed.addOnScrollListener(scrollListener)
         movie_feed.adapter = adapter
@@ -67,6 +67,7 @@ class TmdbFeedFragment : Fragment() {
         viewModel.getMovies(category).observe(this, Observer {
             adapter.notifyDataSetChanged()
             if (viewModel.getCurrentPage(category) == 1) movie_feed.scheduleLayoutAnimation()
+
         })
 
         viewModel.isLoadingPage().observe(this, Observer {
