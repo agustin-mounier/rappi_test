@@ -2,7 +2,9 @@ package com.example.rappitest
 
 import android.app.Activity
 import android.app.Application
+import android.util.Log
 import com.example.rappitest.dagger.DaggerAppComponent
+import com.getkeepsafe.relinker.MissingLibraryException
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -25,12 +27,15 @@ class RappiTestApplication : Application(), HasActivityInjector {
             .build()
             .inject(this)
 
-
-        Realm.init(this)
-        val config = RealmConfiguration.Builder()
-            .deleteRealmIfMigrationNeeded()
-            .build()
-        Realm.setDefaultConfiguration(config)
+        try {
+            Realm.init(this)
+            val config = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+            Realm.setDefaultConfiguration(config)
+        } catch (e : MissingLibraryException) {
+            Log.d("Realm", "missing librealm-jni.dylib")
+        }
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
