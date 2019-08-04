@@ -6,9 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.example.rappitest.models.Movie
-import com.example.rappitest.models.MovieCategories
-import com.example.rappitest.models.MoviePageResponse
+import com.example.rappitest.models.*
 import com.example.rappitest.repository.local.TmdbDao
 import com.example.rappitest.repository.remote.TmdbServiceApi
 import com.nhaarman.mockitokotlin2.argumentCaptor
@@ -114,7 +112,7 @@ class TmdbRepositoryImplTest {
         repository.fetchMovies(Movie.Category.Popular)
         verify(service).getPopularMovies(ArgumentMatchers.anyInt(), argCaptor.capture())
 
-        val movieList = mock(List::class.java) as List<Movie>
+        val movieList = mutableListOf<Movie>()
         val response = MoviePageResponse(1, 20, 1, movieList)
         argCaptor.firstValue.invoke(response)
 
@@ -129,7 +127,7 @@ class TmdbRepositoryImplTest {
         mockNetworkEnable(false)
         val idList = mock(RealmList::class.java) as RealmList<Int>
         val movieCategories = MovieCategories(idList)
-        val movieList = mock(List::class.java) as List<Movie>
+        val movieList = mutableListOf<Movie>()
         `when`(dao.retrieveMovieCategories()).thenReturn(movieCategories)
         `when`(dao.retrieveMoviesWithIds(idList)).thenReturn(movieList)
 
@@ -140,21 +138,23 @@ class TmdbRepositoryImplTest {
         verify(movies[Movie.Category.Popular]?.value)!!.addAll(movieList)
     }
 
-    /*
+
     @Test
-    fun testFetchMovieVides() {
+    fun testFetchMovieVideos() {
         val argCaptor = argumentCaptor<(VideosResponse?) -> Unit>()
         val movieId = 1
 
         repository.fetchMovieVideos(movieId)
-        verify(service).getMovieVideos(movieId, argCaptor.capture())
+        verify(service).getMovieVideos(eq(movieId), argCaptor.capture())
 
         val videosList = mock(List::class.java) as List<Video>
         val videosResponse = VideosResponse(movieId, videosList)
         argCaptor.firstValue.invoke(videosResponse)
 
+        val movieVideos = repository.getMovieVideos(movieId)
+        Assert.assertEquals(videosList, movieVideos.value)
     }
-    */
+
 
     private fun mockNetworkEnable(enable: Boolean) {
         val conectivityManager = mock(ConnectivityManager::class.java)
@@ -166,13 +166,14 @@ class TmdbRepositoryImplTest {
 
     private fun mockMoviesMapIntoRepository(): Map<Movie.Category, MutableLiveData<MutableList<Movie>>> {
         val movies = mapOf<Movie.Category, MutableLiveData<MutableList<Movie>>>(
-            Movie.Category.Popular to MutableLiveData(mock(MutableList::class.java) as MutableList<Movie>),
-            Movie.Category.TopRated to MutableLiveData(mock(MutableList::class.java) as MutableList<Movie>),
-            Movie.Category.Upcoming to MutableLiveData(mock(MutableList::class.java) as MutableList<Movie>)
+            Movie.Category.Popular to MutableLiveData(spy(mutableListOf())),
+            Movie.Category.TopRated to MutableLiveData(spy(mutableListOf())),
+            Movie.Category.Upcoming to MutableLiveData(spy(mutableListOf()))
         )
         ReflectionUtils.setVariableValueInObject(repository, "movies", movies)
         return movies
     }
+
 
     @After
     fun validate() {

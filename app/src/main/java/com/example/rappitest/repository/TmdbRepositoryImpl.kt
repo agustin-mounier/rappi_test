@@ -62,11 +62,7 @@ class TmdbRepositoryImpl @Inject constructor(
     }
 
     override fun getMovieVideos(movieId: Int): LiveData<List<Video>> {
-        if (movieVideos[movieId] == null) {
-            val liveList = MutableLiveData<List<Video>>()
-            movieVideos[movieId] = liveList
-            return liveList
-        }
+        instanciateMovieVideosList(movieId)
         return movieVideos[movieId]!!
     }
 
@@ -80,6 +76,7 @@ class TmdbRepositoryImpl @Inject constructor(
 
     override fun fetchMovieVideos(movieId: Int) {
         tmdbService.getMovieVideos(movieId) {
+            instanciateMovieVideosList(movieId)
             val videos = it?.results!!
             movieVideos[movieId]!!.value = videos
         }
@@ -93,12 +90,7 @@ class TmdbRepositoryImpl @Inject constructor(
         category: Movie.Category,
         serviceCall: (Int, onSuccessFun: (MoviePageResponse?) -> Unit) -> Unit
     ) {
-        if (!isNetworkAvailable() && getMovies(category).value?.size == 0) { // fetch movies locally
-            val movieCategories = tmdbDao.retrieveMovieCategories()
-            val ids = movieCategories.get(category)!!
-            val movies = tmdbDao.retrieveMoviesWithIds(ids)
-            addMovies(category, movies)
-        } else { // fetch movies remotely
+        if (isNetworkAvailable()) { // fetch movies remotely
             serviceCall(pages[category]!!) {
                 val newMovies = it?.results!!
                 tmdbDao.persistMovies(newMovies)
@@ -106,6 +98,11 @@ class TmdbRepositoryImpl @Inject constructor(
                 addMovies(category, newMovies)
                 pages[category] = pages[category]!! + 1
             }
+        } else if (getMovies(category).value.isNullOrEmpty()) { // If there are no movies, fetch movies locally
+            val movieCategories = tmdbDao.retrieveMovieCategories()
+            val ids = movieCategories.get(category)!!
+            val movies = tmdbDao.retrieveMoviesWithIds(ids)
+            addMovies(category, movies)
         }
     }
 
@@ -137,5 +134,12 @@ class TmdbRepositoryImpl @Inject constructor(
         val connectivityManager = app.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager?
         val activeNetworkInfo = connectivityManager!!.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    private fun instanciateMovieVideosList(movieId: Int) {
+        if (movieVideos[movieId] == null) {
+            val liveList = MutableLiveData<List<Video>>()
+            movieVideos[movieId] = liveList
+        }
     }
 }

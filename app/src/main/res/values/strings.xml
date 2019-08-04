@@ -14,4 +14,5 @@
     <string name="overview">Overview</string>
     <string name="previews">Previews</string>
     <string name="network_error">Opps.. There was an error while fetching the movies</string>
+    <string name="snackbar_error_text">Error requesting movies, try again later.</string>
 </resources>

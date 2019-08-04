@@ -11,8 +11,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rappitest.R
 import com.example.rappitest.models.Movie
+import com.example.rappitest.repository.remote.ErrorType
 import com.example.rappitest.utils.InfiniteScrollViewListener
 import com.example.rappitest.viewmodels.TmdbFeedViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.movie_feed_page_layout.*
 import javax.inject.Inject
@@ -73,6 +75,10 @@ class TmdbFeedFragment : Fragment() {
         viewModel.isLoadingPage().observe(this, Observer {
             if (it && viewModel.getCurrentPage(category) == 1) showLoading() else hideLoading()
         })
+
+        viewModel.getRequestErrorType().observe(this, Observer {
+            displayError(it)
+        })
     }
 
     private fun showLoading() {
@@ -85,4 +91,15 @@ class TmdbFeedFragment : Fragment() {
         loading_text.visibility = View.GONE
     }
 
+    private fun displayError(errorType: ErrorType) {
+        when (errorType) {
+            ErrorType.SNACKBAR -> {
+                Snackbar.make(movie_feed, R.string.snackbar_error_text, Snackbar.LENGTH_SHORT).show()
+            }
+            ErrorType.FULL_SCREEN -> {
+                network_error_text.visibility = View.VISIBLE
+                movie_feed.visibility = View.GONE
+            }
+        }
+    }
 }

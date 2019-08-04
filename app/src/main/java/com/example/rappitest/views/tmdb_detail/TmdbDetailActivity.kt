@@ -19,6 +19,7 @@ import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.tmdb_detail_layout.*
 import javax.inject.Inject
 
+
 class TmdbDetailActivity : AppCompatActivity() {
 
     companion object {
@@ -37,6 +38,7 @@ class TmdbDetailActivity : AppCompatActivity() {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tmdb_detail_layout)
+        setSupportActionBar(movie_detail_toolbar)
         movieId = intent.getIntExtra(MOVIE_EXTRA, -1)
         viewModel.fetchMovieVideos(movieId)
         val movie = viewModel.getMovie(movieId)
@@ -71,5 +73,10 @@ class TmdbDetailActivity : AppCompatActivity() {
                 (videos_list.adapter as VideosListAdapter).notifyDataSetChanged()
             }
         })
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 }
