@@ -19,7 +19,8 @@ class TmdbDaoImpl @Inject constructor(private val realm: Realm) : TmdbDao {
     }
 
     override fun retrieveMoviesWithIds(ids: List<Int>): List<Movie> {
-        return realm.where(Movie::class.java).`in`("id", ids.toTypedArray()).findAll()
+        val model = realm.where(Movie::class.java).`in`("id", ids.toTypedArray()).findAll()
+        return realm.copyFromRealm(model)
     }
 
     override fun updateMovieCategories(movies: List<Movie>, category: Movie.Category) {
