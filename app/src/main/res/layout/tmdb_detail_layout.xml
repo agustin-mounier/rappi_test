@@ -11,7 +11,7 @@
             android:background="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_constraintTop_toTopOf="@+id/movie_detail_backdrop"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:navigationIcon="?attr/homeAsUpIndicator"/>

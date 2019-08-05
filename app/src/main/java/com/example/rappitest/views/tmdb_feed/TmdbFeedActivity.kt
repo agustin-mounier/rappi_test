@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.tmdb_feed_layout.*
 class TmdbFeedActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tmdb_feed_layout)
         initView()

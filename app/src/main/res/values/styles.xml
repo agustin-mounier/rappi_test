@@ -1,4 +1,9 @@
 <resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar"/>
+    <style name="RappiTestTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
     <style name="Tmdb"/>
     <style name="Tmdb.Title">
         <item name="android:textSize">24sp</item>
